@@ -1,5 +1,7 @@
 # Feature Engineering 방법
 출처 : http://hero4earth.com/blog/learning/2018/01/29/Feature_Engineering_Basic/
+<br>
+참고 : https://elitedatascience.com/feature-engineering-best-practices
 
 ## 1. 관점에 따른 분류
 Business driven features : 해결하려는 문제가 있는 현장인 비즈니스 관점에서 데이터를 분석하여 특징을 만들어내는 관점입니다.
