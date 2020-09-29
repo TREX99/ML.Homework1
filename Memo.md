@@ -25,64 +25,64 @@
 #### 주구매지점 : lambda x: x.value_counts().index[0])
 
 <br><br><br><br>
-## 구매추세 패턴
+### 구매추세 패턴
 ```
 ```
-## 가격선호도 (예: 고가상품구매율)
+### 가격선호도 (예: 고가상품구매율)
 ```
 ```
-## 시즌 선호도
+### 시즌 선호도
 ```
 ```
-## 휴면(또는 이탈) 여부
+### 휴면(또는 이탈) 여부
 ```
 ```
-## Top-10 베스트 셀러(gds_grp_mclas_nm)에 대한 구매 금액/건수/여부
+### Top-10 베스트 셀러(gds_grp_mclas_nm)에 대한 구매 금액/건수/여부
 ```
 ```
-## 상품별 구매순서
+### 상품별 구매순서
 ```
 ```
-## 주구매 요일
+### 주구매 요일
 ```
 ```
 
-## 평균구매상품종류
+### 평균구매상품종류
 ```
 df =tr.groupby(['custid','goodcd'])['tot_amt'].agg([('good_count', 'count')]).reset_index()
 f = df.groupby(['custid'])['good_count'].agg([('good_count_mean', 'mean')]).reset_index()
 features.append(f)
 ```
 
-## 일평균구매액
+### 일평균구매액
 ```
 test2 = tr.groupby(['sales_date','custid'])['tot_amt'].agg([('day_amt', 'sum')]).reset_index()
 test2 = test2.groupby(['custid'])['day_amt'].agg([('일평균구매액', 'mean')]).reset_index()
 features.append(test2)
 ```
 
-## 일평균구매건
+### 일평균구매건
 ```
 df = tr.groupby(['sales_date','custid'])['custid'].agg([('day_visit', 'count')]).reset_index()
 f = df.groupby(['custid'])['day_visit'].agg([('일평균구매건', 'mean')]).reset_index()
 features.append(f)
 ```
 
-## 최소구매액
+### 최소구매액
 ```
 f = tr.groupby('cust_id')['amount'].agg([('최소구매액', 'min')]).reset_index()
 features.append(f)
 f
 ```
 
-## 구매액 중간값 (median)
+### 구매액 중간값 (median)
 ```
 f = tr.groupby('cust_id')['amount'].agg([('구매액 중간값', 'median')]).reset_index()
 features.append(f)
 f
 ```
 
-## 주거래 지점별 거래수
+### 주거래 지점별 거래수
 ```
 tr['ones']= np.ones(len(tr))
 store = pd.pivot_table(tr, values='ones', index='cust_id', columns='store_nm',aggfunc=sum,fill_value=0)
@@ -91,7 +91,7 @@ f = store.reset_index()
 features.append(f)
 ```
 
-## 월평균 구매액
+### 월평균 구매액
 ```
 tr['ym'] = tr.tran_date.str[:4] + tr.tran_date.str[5:7]
 dm_piv = pd.pivot_table(tr, values='amount', index='cust_id', columns='ym', aggfunc=np.mean, fill_value=0)
@@ -100,7 +100,7 @@ f = dm_piv
 features.append(f)
 ```
 
-## 1년 중 거래하는 개월 수 : 얼마나 자주 거래하는지 근사적 확인. 예)12인 경우 매월마다 거래하는 고객
+### 1년 중 거래하는 개월 수 : 얼마나 자주 거래하는지 근사적 확인. 예)12인 경우 매월마다 거래하는 고객
 ```
 tr['ym'] = tr.tran_date.str[:4] + tr.tran_date.str[5:7]
 dm_piv = pd.pivot_table(tr, values='amount', index='cust_id', columns='ym', aggfunc=np.mean, fill_value=0)
@@ -112,7 +112,7 @@ f = f.reset_index()
 features.append(f)
 ```
 
-## 월별 구매 건수
+### 월별 구매 건수
 ```
 tr['ym'] = tr.tran_date.str[:4] + tr.tran_date.str[5:7]
 dm_piv = pd.pivot_table(tr, values='ones', index='cust_id', columns='ym', aggfunc=sum, fill_value=0)
@@ -121,7 +121,7 @@ f = dm_piv
 features.append(f)
 ```
 
-## 최대 구매 건수 월
+### 최대 구매 건수 월
 ```
 tr['ym'] = tr.tran_date.str[:4] + tr.tran_date.str[5:7]
 dm_piv = pd.pivot_table(tr, values='ones', index='cust_id', columns='ym', aggfunc=sum, fill_value=0)
@@ -133,7 +133,7 @@ f = f.reset_index()
 features.append(f)
 ```
 
-## 최초 구매일
+### 최초 구매일
 ```
 tr['dym'] = tr.tran_date.str[:4] + tr.tran_date.str[5:7] + tr.tran_date.str[8:10]
 f = tr.groupby('cust_id')['dym'].agg([('최초 구매일', 'min')]).reset_index()
@@ -154,7 +154,7 @@ del f3['최초 구매일']
 f3
 ```
 
-## 거래주기 : 총 거래 기간을 내점 일수로 나눠 거래주기를 구한다. 며칠마다 거래하는지 판단
+### 거래주기 : 총 거래 기간을 내점 일수로 나눠 거래주기를 구한다. 며칠마다 거래하는지 판단
 ```
 f3 = pd.merge(f1,f2,on='cust_id')
 f3['max-min'] = np.zeros(len(f1)) 
@@ -176,7 +176,7 @@ del f4['내점일 수']
 f4
 ```
 
-## 충성도 : 한 번이라도 이용한 지점 수를 측정해 충성도 체크. 만약 1 이라면 하나의 지점만 이용하는 단골고객
+### 충성도 : 한 번이라도 이용한 지점 수를 측정해 충성도 체크. 만약 1 이라면 하나의 지점만 이용하는 단골고객
 ```
 f = tr.groupby('cust_id')['store_nm'].agg([('한번이라도 이용한 지점 수', 'nunique')]).reset_index()
 features.append(f)
@@ -186,7 +186,7 @@ features.append(f)
 f
 ```
 
-## 브랜드 충성도 : 4군데 코너에서 4군데의 지점만 이용한다면 하나의 단골 브랜드만 이용함. (1에 가까울수록 높음)
+### 브랜드 충성도 : 4군데 코너에서 4군데의 지점만 이용한다면 하나의 단골 브랜드만 이용함. (1에 가까울수록 높음)
 ```
 f1 = tr.groupby('cust_id')['gds_grp_mclas_nm'].agg([('한번이라도 이용한 코너 수', 'nunique')]).reset_index()
 f2 = tr.groupby('cust_id')['gds_grp_nm'].agg([('한번이라도 이용한 브랜드 수', 'nunique')]).reset_index()
@@ -198,7 +198,7 @@ features.append(f3)
 f3
 ```
 
-## 일 평균 구매일 : 동일날짜별로 구매액 합계 후 평균
+### 일 평균 구매일 : 동일날짜별로 구매액 합계 후 평균
 ```
 "평균구매액" 보다 의미 있을 것으로 판단
 f = tr.groupby(['cust_id','dym'])['amount'].agg([('total', 'sum')]).reset_index()
@@ -215,7 +215,7 @@ features.append(f); f
 ```
 
 ### 요일 구매패턴 : 주중 1, 주말 0
-#### "주말방문비율" 보다 활용성이 더 높을 것으로 예상함.
+##### "주말방문비율" 보다 활용성이 더 높을 것으로 예상함.
 ```
 def weekday(x):
     w = x.dayofweek 
@@ -228,7 +228,7 @@ features.append(f); f
 ```
 
 ### 계절별 구매건수
-#### "계절별 구매비율 보다 활용성이 더 높을 것으로 예상함.
+##### "계절별 구매비율 보다 활용성이 더 높을 것으로 예상함.
 ```
 def f1(x):
     k = x.month
@@ -249,7 +249,7 @@ features.append(f); f
 
 
 ### 요일별 구매건수
-#### "주말방문비율" 보다 활용성이 더 높을 것으로 예상함.
+##### "주말방문비율" 보다 활용성이 더 높을 것으로 예상함.
 ```
 def f2(x):
     k = x.dayofweek 
