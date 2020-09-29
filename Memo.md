@@ -491,6 +491,70 @@ features.append(f)
 f.head()
 ```
 
+### 이용지점 다양성: 이용한 서로다른 매장 수
+```
+n = 4
+f = tr.groupby('custid')['str_nm'].agg([('매장이용다양성', lambda x: len(x.unique()) / n)]).reset_index()
+features.append(f); f
+```
+
+### 요일별 구매건수 - 요일을 새로운 기준으로 구분해봄
+```
+def f2(x):
+    k = x.dayofweek
+    if k <= 2 :
+        return('월화수_구매건수')
+    elif 3 <= k < 5 :
+        return('목금_구매건수')
+    elif 5 <= k < 6 :
+        return('토_구매건수')
+    else :
+        return('일_구매건수')    
+    
+tr['요일2'] = pd.to_datetime(tr.sales_date).apply(f2)
+f = pd.pivot_table(tr, index='custid', columns='요일2', values='tot_amt', 
+                   aggfunc=np.size, fill_value=0).reset_index()
+features.append(f); f
+```
+
+### 시간대별 구매건수: 12시 이전 / 12~2시 / 2~5시 / 5~6시 / 6시 이후
+```
+def f2(x):
+    if 901 <= x < 1200 :
+        return('12시 이전_구매건수')
+    elif 1200 <= x < 1400 :
+        return('12~2시_구매건수')
+    elif 1400 <= x < 1600 :
+        return('2~4시_구매건수')
+    elif 1600 <= x < 1800 :
+        return('4~6시_구매건수')
+    else :
+        return('6시이후_구매건수')  
+
+tr['timeslot2'] = tr.sales_time.apply(f2)
+```
+
+### 구입 지점 빈도값 도출
+```
+f = pd.pivot_table(tr, index='custid', columns='str_nm', values='tot_amt', 
+                   aggfunc=np.size, fill_value=0).reset_index()
+features.append(f); f
+```
+
+### 구매 파트 변수의 각 파트의 빈도값 도출
+```
+f = pd.pivot_table(tr, index='custid', columns='part_nm', values='tot_amt', 
+                   aggfunc=np.size, fill_value=0).reset_index()
+features.append(f); f
+```
+
+### 구매제품 변수의 각 파트의 빈도값 도출
+```
+f = pd.pivot_table(tr, index='custid', columns='buyer_nm', values='tot_amt', 
+                   aggfunc=np.size, fill_value=0).reset_index()
+features.append(f); f
+```
+
 
 ### 특이정보 : 성별을 아는 경우 만들 수 있는 파생변수 : 통계적 개념으로 무슨 의미인지 곰곰히 생각해 볼 것 !!!!!!!!!!
 기존 데이터의 여:남 비율이 6.5:3.5이므로 
@@ -515,3 +579,16 @@ features.append(f)
 f.head()
 ```
 
+### 최적의 성별예측 모형에 사용하는 feature
+```
+from sklearn.model_selection import train_test_split
+feature_name = ['VISIT_CNT','SALES_AMT','USABLE_INIT','BIRTH_SL_CODE','ACC_PNT','USED_PNT','USABLE_PNT',
+                'SMS_CODE','MEMP_TP_CODE']
+label_name = ['GENDER']
+
+X_train,X_test,y_train,y_test = train_test_split(train_df[feature_name],train_df[label_name],test_size=.25,random_state=0)
+
+prediction_data = pred_df[feature_name]
+
+print(X_train.shape,y_train.shape,X_test.shape,y_test.shape)
+```
